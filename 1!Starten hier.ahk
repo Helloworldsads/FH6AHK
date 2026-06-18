@@ -346,10 +346,20 @@ CheckForUpdates() {
     
     whr := ComObject("WinHttp.WinHttpRequest.5.1")
     try {
-        whr.Open("GET", VersionURL, true)
+        BustURL := VersionURL . "?nocache=" . A_TickCount
+        
+        whr.Open("GET", BustURL, true)
         whr.Send()
         whr.WaitForResponse()
+    
         OnlineVersion := Trim(whr.ResponseText, " `t`r`n")
+        
+        if (SubStr(OnlineVersion, 1, 3) = "`xEF`xBB`xBF") {
+            OnlineVersion := SubStr(OnlineVersion, 4)
+        }
+        if (Ord(OnlineVersion) = 65279) {
+            OnlineVersion := SubStr(OnlineVersion, 2)
+        }
     } catch {
         return
     }
