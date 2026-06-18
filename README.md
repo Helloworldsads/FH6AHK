@@ -37,3 +37,7 @@ Mit der Nutzung der Software erklärt sich der Nutzer damit einverstanden, dass 
 Jeder Nutzer ist selbst dafür verantwortlich, sicherzustellen, dass die Verwendung der Software den geltenden Gesetzen, Vorschriften und Nutzungsbedingungen entspricht.
 
 Durch die Nutzung der Software akzeptiert der Nutzer diesen Haftungsausschluss in vollem Umfang.
+
+<sub>
+Die Software wird ohne Gewähr und zu Forschungs-, Lern- und Bildungszwecken bereitgestellt. Die Nutzung erfolgt ausschließlich auf eigene Verantwortung. Der Autor übernimmt keine Haftung für Schäden, Datenverluste, Kontosperrungen oder sonstige Folgen, die aus der Nutzung entstehen.
+</sub>
