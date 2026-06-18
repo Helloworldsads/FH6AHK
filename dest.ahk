@@ -1,7 +1,7 @@
 ;Erstellt by Rndl :)
 ;F10 Starten / F11 Stoppen
 ;Sollten probleme auftauchen gerne im DC melden :) - spontaneboost -
-;!Änder auf keinen fall irgendwelche Timings Werte oder Namen hier das macht das ganze script kaputt!
+;!Änder auf keinen fall irgendwelche Timings Werte oder Namen hier das macht das ganze script kaputt!  
 ;Achtet auf die Dateinamen.
 
 #Requires AutoHotkey v2.0
@@ -267,7 +267,7 @@ FokusiereSpiel() {
     return true
 }
 
-; --- Hilfsfunktion für sichere Tastendrücke mit Fokus-Check ---
+; --- Hilfsfunktion für einen sicheren Tasten-Druck mit Fokus-Check ---
 SendeTaste(Taste) {
     if FokusiereSpiel() {
         Send(Taste)
@@ -441,6 +441,5 @@ PerformUpdate() {
         DirDelete(ExtractDir, true)
         MsgBox("Skript-Datei im Update nicht gefunden. Bitte starte manuell neu.", "Update Hinweis")
     }
-    
     ExitApp()
 }
