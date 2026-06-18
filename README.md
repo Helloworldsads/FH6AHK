@@ -25,3 +25,15 @@ Vorher Anna starten dann erst F10 und mit OK entspannt das Fenster bestätigen d
 Wenn doch sollte alles erklärt in der jeweiligen Meldung sein.
  
 Viel Spaß!
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## Haftungsausschluss (Disclaimer)
+
+Die bereitgestellte Software wird kostenlos und ohne jegliche Garantie oder Gewährleistung zur Verfügung gestellt. Die Nutzung erfolgt ausschließlich auf eigene Verantwortung und eigenes Risiko des Nutzers.
+
+Der Entwickler übernimmt keinerlei Haftung für direkte oder indirekte Schäden, Datenverluste, Systemausfälle, finanzielle Verluste oder sonstige Folgen, die durch die Installation, Nutzung, Modifikation oder Weiterverbreitung der Software entstehen können.
+
+Mit der Nutzung der Software erklärt sich der Nutzer damit einverstanden, dass sämtliche Handlungen und deren Konsequenzen ausschließlich in seiner eigenen Verantwortung liegen. Der Entwickler stellt lediglich das Projekt zur Verfügung und übernimmt keine Verantwortung für die Art und Weise der Nutzung.
+
+Jeder Nutzer ist selbst dafür verantwortlich, sicherzustellen, dass die Verwendung der Software den geltenden Gesetzen, Vorschriften und Nutzungsbedingungen entspricht.
+
+Durch die Nutzung der Software akzeptiert der Nutzer diesen Haftungsausschluss in vollem Umfang.
