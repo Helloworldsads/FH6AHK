@@ -2,12 +2,6 @@
 ;F10 Starten / F11 Stoppen
 ;Sollten probleme auftauchen gerne im DC melden :) - spontaneboost -
 ;!Änder auf keinen fall irgendwelche Timings Werte oder Namen hier das macht das ganze script kaputt!
-;Du musst notfalls folgendes machen:
-;                               - Screenshots von den Menüpunkten selbst machen (Online, Rivalen, Horizon Rivalen, Streckenrennen, R-Klassen Tag, Rivalen wechseln,
-;                                 Rivalen-Event starten, 2 Runde und von dem Navi unten das AutoDrive:Ein)
-;                                 Macht die Screenshots so wie ich sonst könnte es nicht gehen Renamen nicht vergessen
-;                               - Packt jetzt die PNG dateien in den gleichen Ordner mit den richtigen Namen.
-;                               - Sollte gehen sonst = Zeile 3!  
 ;Achtet auf die Dateinamen.
 
 #Requires AutoHotkey v2.0
@@ -288,7 +282,7 @@ KlickeAufBild(Dateiname, AlternativDatei := "") {
     if WinExist(GameTitle) {
         WinGetPos(,, &WinWidth, &WinHeight, GameTitle)
         
-        ; 1. Versuch: Standardbild (In v2 müssen Strings sauber verkettet werden)
+        ; 1. Versuch: Standardbild
         OptionenUndDatei := "*100 " . Dateiname
         if ImageSearch(&FoundX, &FoundY, 0, 0, WinWidth, WinHeight, OptionenUndDatei) {
             KlickAblauf(FoundX, FoundY)
@@ -299,7 +293,6 @@ KlickeAufBild(Dateiname, AlternativDatei := "") {
         if (AlternativDatei != "") {
             OptionenUndAlternativ := "*100 " . AlternativDatei
             if ImageSearch(&FoundX, &FoundY, 0, 0, WinWidth, WinHeight, OptionenUndAlternativ) {
-                KlickAblauf(FoundX, FoundY)
                 return true
             }
         }
@@ -351,19 +344,16 @@ KlickAblauf(X, Y) {
 CheckForUpdates() {
     global CurrentVersion, VersionURL
     
-    ; Online-Version abrufen per COM-Objekt
     whr := ComObject("WinHttp.WinHttpRequest.5.1")
     try {
         whr.Open("GET", VersionURL, true)
         whr.Send()
         whr.WaitForResponse()
-        OnlineVersion := Trim(whr.ResponseText)
+        OnlineVersion := Trim(whr.ResponseText, " `t`r`n")
     } catch {
-        ; Bei Netzwerkfehlern wird das Update stillschweigend übersprungen
         return
     }
     
-    ; Prüfen ob Versionen voneinander abweichen
     if (OnlineVersion != "" && OnlineVersion != CurrentVersion) {
         Result := MsgBox("Eine neue Version (" . OnlineVersion . ") ist verfügbar.`nMöchtest du das Update jetzt automatisch installieren?", "Update verfügbar!", "YesNo 32")
         if (Result = "Yes") {
@@ -373,32 +363,84 @@ CheckForUpdates() {
 }
 
 PerformUpdate() {
-    global DownloadURL
+    global User, Repo
     
-    ToolTip("Update wird heruntergeladen... Bitte warten.")
-    TargetFile := A_ScriptDir . "\FH6AHK_new.ahk"
+    ToolTip("Update wird geladen...")
+    ZipFile := A_ScriptDir . "\update.zip"
+    ExtractDir := A_ScriptDir . "\update_temp"
+    ZipURL := "https://github.com/" . User . "/" . Repo . "/archive/refs/heads/main.zip"
     
-    ; Vorherige Reste einer abgebrochenen Update-Datei löschen falls vorhanden
-    if FileExist(TargetFile) {
-        FileDelete(TargetFile)
-    }
+    if FileExist(ZipFile)
+        FileDelete(ZipFile)
+    if DirExist(ExtractDir)
+        DirDelete(ExtractDir, true)
         
-    ; Herunterladen mit der v2-nativen Download Funktion
     try {
-        Download(DownloadURL, TargetFile)
+        Download(ZipURL, ZipFile)
     } catch {
-        MsgBox("Download fehlgeschlagen. Überprüfe deine Internetverbindung.", "Fehler", "48")
+        MsgBox("Fehler beim Download der ZIP-Datei.", "Update Fehler", 48)
         ToolTip()
         return
     }
     
-    ToolTip("Update wird installiert...")
-    Sleep(1000)
+    ToolTip("Dateien werden nativ extrahiert...")
+    DirCreate(ExtractDir)
     
-    ; PowerShell-Befehl generiert unter Verwendung korrekter Anführungszeichen für v2
-    CmdLine := "powershell -Command `"Start-Sleep -s 2; Remove-Item -Path '" A_ScriptFullPath "' -Force; Move-Item -Path '" TargetFile "' -Destination '" A_ScriptFullPath "' -Force; Start-Process '" A_ScriptFullPath "'`""
+    try {
+        shell := ComObject("Shell.Application")
+        zipFolder := shell.NameSpace(ZipFile)
+        items := zipFolder.Items()
+        targetFolder := shell.NameSpace(ExtractDir)
+        targetFolder.CopyHere(items, 4 | 16)
+    } catch {
+        MsgBox("Fehler beim Entpacken. Bitte entpacke 'update.zip' manuell.", "Update Fehler", 48)
+        ToolTip()
+        return
+    }
     
-    ; Startet PowerShell unsichtbar im Hintergrund und schließt die aktuelle Instanz sofort
-    Run(CmdLine, , "Hide")
+    ToolTip("Dateien werden im Verzeichnis ersetzt...")
+    Sleep(500)
+    
+    SourceDir := ""
+    Loop Files, ExtractDir . "\*", "D" {
+        SourceDir := A_LoopFileFullPath
+        break
+    }
+    
+    if (SourceDir = "") {
+        MsgBox("Der entpackte GitHub-Ordner wurde nicht gefunden.", "Update Fehler", 48)
+        ToolTip()
+        return
+    }
+
+    ; Alle Assets und Bilder sofort live überschreiben
+    Loop Files, SourceDir . "\*", "R" {
+        RelPath := SubStr(A_LoopFileFullPath, StrLen(SourceDir) + 2)
+        DestPath := A_ScriptDir . "\" . RelPath
+        
+        if (A_LoopFileFullPath = A_ScriptFullPath || DestPath = A_ScriptFullPath)
+            continue
+            
+        SplitPath(DestPath, , &DestDir)
+        if !DirExist(DestDir)
+            DirCreate(DestDir)
+            
+        FileCopy(A_LoopFileFullPath, DestPath, true)
+    }
+
+    NewScriptFile := SourceDir . "\" . A_ScriptName
+    if FileExist(NewScriptFile) {
+        ; Löscht stattdessen im Nachgang brav die ZIP und Temp-Ordner.
+        CmdLine := 'cmd.exe /c timeout /t 1 /nobreak && del /f /q "' . A_ScriptFullPath . '" && move /y "' . NewScriptFile . '" "' . A_ScriptFullPath . '" && del /q "' . ZipFile . '" && rd /s /q "' . ExtractDir . '"'
+        Run(CmdLine, , "Hide")
+        
+        ; Dem Nutzer Bescheid geben, dass er einmal manuell starten soll
+        MsgBox("Das Update wurde erfolgreich installiert!`n`nBitte starte das Skript jetzt einmal kurz manuell neu, damit die Änderungen aktiv werden.", "Update erfolgreich", "64")
+    } else {
+        FileDelete(ZipFile)
+        DirDelete(ExtractDir, true)
+        MsgBox("Skript-Datei im Update nicht gefunden. Bitte starte manuell neu.", "Update Hinweis")
+    }
+    
     ExitApp()
 }
