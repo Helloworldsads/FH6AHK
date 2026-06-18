@@ -17,7 +17,7 @@ SetWorkingDir A_ScriptDir
 ; ==========================================
 ; UPDATE-KONFIGURATION (AHK v2 kompatibel)
 ; ==========================================
-global CurrentVersion := "1.0.0"
+global CurrentVersion := "0.0.1"
 global User := "Helloworldsads"
 global Repo := "FH6AHK"
 
