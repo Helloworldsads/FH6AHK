@@ -1,7 +1,7 @@
 ;Erstellt by Rndl :)
 ;F10 Starten / F11 Stoppen
 ;Sollten probleme auftauchen gerne im DC melden :) - spontaneboost -
-;!Änder auf keinen fall irgendwelche Timings Werte oder Namen hier das macht das ganze script kaputt!  
+;!Änder auf keinen fall irgendwelche Timings, Werte oder Namen hier das macht das ganze script kaputt!  
 ;Achtet auf die Dateinamen.
 
 #Requires AutoHotkey v2.0
@@ -11,7 +11,7 @@ SetWorkingDir A_ScriptDir
 ; ==========================================
 ; UPDATE-KONFIGURATION (AHK v2 kompatibel)
 ; ==========================================
-global CurrentVersion := "0.0.1"
+global CurrentVersion := "0.0.2"
 global User := "Helloworldsads"
 global Repo := "FH6AHK"
 
@@ -88,7 +88,7 @@ F10:: {
             break
         }
         
-        ; --- Ab HIER Könnte es Buggen ---
+        ; --- Ab HIER Könnte es Buggen ---                                                                                                                                 Minions wissen schon was geändert werden muss :P
         Sleep(800)
         SendeTaste("a")       
         Sleep(400)
@@ -110,7 +110,7 @@ F10:: {
         }
         Sleep(800)
         
-        ; --- STEP 5 (Jetzt mit Warteschleife) ---
+        ; --- STEP 5 ---
         ToolTip("Suche Bestenliste... Ja wo isse denn?")
         SetTimer(() => ToolTip(), -3000)
 
@@ -127,7 +127,7 @@ F10:: {
             SetTimer(() => ToolTip(), -2000) 
             Sleep(800)
         } else {
-            MsgBox("Fehler: 'bestenliste_knopf.png' wurde nicht gefunden! Passiert geh einfach zum Freeroam und drück erneut F10!")
+            MsgBox("Fehler: 'bestenliste_knopf.png' wurde nicht gefunden! Passiert geh einfach zum Freeroam und drück erneut F10!") ;sollte nicht mehr vorkommen wegen änderung in lane 114 - 160 
             Running := false
             break
         }
@@ -168,7 +168,7 @@ F10:: {
         ; --- WARTEN AUF RUNDE 2 ---
         ToolTip("Runde 2 läuft -Ich Warte Ca 5 min und schau nochmal ob du Fertig bist :)")
         SetTimer(() => ToolTip(), -3000)
-        Sleep(310000) 
+        Sleep(310000) ; Ja ich weiß hier muss ich nochmal ran, oder du nutzt halt einfach den nissan :O 
         ToolTip("Lass mal sehen bist Du durch?")
         SetTimer(() => ToolTip(), -1000)
         Sleep(1000)
@@ -204,7 +204,7 @@ F10:: {
         
         
         ToolTip("Schaue ob du ein Tuning angewendet hast...")
-        SetTimer(() => ToolTip(), -2000) 
+        SetTimer(() => ToolTip(), -3500) 
 
         
         StartZeit := A_TickCount
@@ -236,7 +236,7 @@ F10:: {
             break
         }
     
-        ToolTip("Anna Erkannt Fange neu an")
+        ToolTip("Anna Erkannt! Fange neu an!")
         SetTimer(() => ToolTip(), -1000)
     }
 }
@@ -376,6 +376,7 @@ PerformUpdate() {
     global User, Repo
     
     ToolTip("Update wird geladen...")
+        SetTimer(() => ToolTip(), -800) ;wegen das du auch siehst ich was mache :P
     ZipFile := A_ScriptDir . "\update.zip"
     ExtractDir := A_ScriptDir . "\update_temp"
     ZipURL := "https://github.com/" . User . "/" . Repo . "/archive/refs/heads/main.zip"
@@ -394,6 +395,7 @@ PerformUpdate() {
     }
     
     ToolTip("Dateien werden nativ extrahiert...")
+        SetTimer(() => ToolTip(), -1500)
     DirCreate(ExtractDir)
     
     try {
@@ -403,12 +405,13 @@ PerformUpdate() {
         targetFolder := shell.NameSpace(ExtractDir)
         targetFolder.CopyHere(items, 4 | 16)
     } catch {
-        MsgBox("Fehler beim Entpacken. Bitte entpacke 'update.zip' manuell.", "Update Fehler", 48)
+        MsgBox("Fehler beim Entpacken. Bitte entpacke 'update.zip' manuell.", "Update Fehler 406", 48)
         ToolTip()
         return
     }
     
     ToolTip("Dateien werden im Verzeichnis ersetzt...")
+        SetTimer(() => ToolTip(), -500) ; will euch ja nichts vorenthalten :P
     Sleep(500)
     
     SourceDir := ""
@@ -418,7 +421,7 @@ PerformUpdate() {
     }
     
     if (SourceDir = "") {
-        MsgBox("Der entpackte GitHub-Ordner wurde nicht gefunden.", "Update Fehler", 48)
+        MsgBox("Der entpackte GitHub-Ordner wurde nicht gefunden.", "Update Fehler 404", 48)
         ToolTip()
         return
     }
